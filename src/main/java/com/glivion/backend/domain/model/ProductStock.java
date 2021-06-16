@@ -9,20 +9,25 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-public class User {
+public class ProductStock {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Integer id;
 
-    @Column(nullable = false)
-    Role role;
     @OneToOne
-    UserProfile userProfile;
+    Product product;
+
+    Integer availableQuantity;
+    Integer quantityOnHold;
+    Integer totalQuantity;
+
+
     @CreationTimestamp
     @Column(nullable = false)
-    LocalDateTime joinedAt;
+    LocalDateTime createdAt;
     @UpdateTimestamp
     @Column(nullable = false)
     LocalDateTime updatedAt;
+
 }

@@ -9,19 +9,26 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-public class User {
+public class UserProfile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Integer id;
 
-    @Column(nullable = false)
-    Role role;
     @OneToOne
-    UserProfile userProfile;
+    User user;
+
+    @Column(nullable = false)
+    String name;
+    @Column(unique = true, nullable = false)
+    String emailAddress;
+    @Column(unique = true)
+    String phoneNumber;
+
+
     @CreationTimestamp
     @Column(nullable = false)
-    LocalDateTime joinedAt;
+    LocalDateTime createdAt;
     @UpdateTimestamp
     @Column(nullable = false)
     LocalDateTime updatedAt;

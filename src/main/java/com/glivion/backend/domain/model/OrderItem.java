@@ -5,23 +5,29 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 @Entity
 @Data
-public class User {
+public class OrderItem {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    @Column(nullable = false)
-    Role role;
-    @OneToOne
-    UserProfile userProfile;
+    @ManyToOne
+    Order order;
+    @ManyToOne
+    Product product;
+
+    Integer quantity;
+    Integer totalPrice;
+
+
     @CreationTimestamp
     @Column(nullable = false)
-    LocalDateTime joinedAt;
+    LocalDateTime createdAt;
     @UpdateTimestamp
     @Column(nullable = false)
     LocalDateTime updatedAt;

@@ -9,20 +9,32 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-public class User {
+
+public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
     @Column(nullable = false)
-    Role role;
+    String name;
+    @Column(nullable = false, unique = true)
+    String code;
+    String description;
+    String imageUrl;
+    @Column(nullable = false)
+    Integer price;
+
     @OneToOne
-    UserProfile userProfile;
+    ProductCategory category;
+    @OneToOne
+    ProductStock stock;
+
     @CreationTimestamp
     @Column(nullable = false)
-    LocalDateTime joinedAt;
+    LocalDateTime createdAt;
     @UpdateTimestamp
     @Column(nullable = false)
     LocalDateTime updatedAt;
+
 }
