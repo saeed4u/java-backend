@@ -1,16 +1,22 @@
 package com.glivion.backend.domain.model;
 
-import lombok.Data;
+import lombok.*;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
+@Table(name = "users")
 @Entity
-@Data
+@Getter
+@Setter
+@ToString
 public class User {
 
+    @Column(nullable = false)
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Integer id;
@@ -25,4 +31,5 @@ public class User {
     @UpdateTimestamp
     @Column(nullable = false)
     LocalDateTime updatedAt;
+
 }

@@ -1,14 +1,16 @@
 package com.glivion.backend.domain.model;
 
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Table(name = "user_profiles")
 @Entity
-@Data
+@Getter
+@Setter
 public class UserProfile {
 
     @Id
