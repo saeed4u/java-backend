@@ -17,7 +17,7 @@ public class UserProfile {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Integer id;
 
-    @OneToOne
+    @OneToOne(mappedBy = "userProfile")
     User user;
 
     @Column(nullable = false)

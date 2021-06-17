@@ -19,7 +19,7 @@ public class ProductStock {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Integer id;
 
-    @OneToOne
+    @OneToOne(mappedBy = "stock")
     Product product;
 
     Integer availableQuantity;

@@ -28,7 +28,7 @@ public class Product {
     @Column(nullable = false)
     Integer price;
 
-    @OneToOne
+    @ManyToOne
     ProductCategory category;
     @OneToOne
     ProductStock stock;
