@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class Order {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     Integer id;
 
     @Column(unique = true, nullable = false)
@@ -33,6 +33,7 @@ public class Order {
     Integer orderTotal;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     OrderStatus status;
 
     @CreationTimestamp

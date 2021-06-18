@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class ProductStock {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     Integer id;
 
     @OneToOne(mappedBy = "stock")

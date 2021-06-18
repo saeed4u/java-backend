@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class UserProfile {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     Integer id;
 
     @OneToOne(mappedBy = "userProfile")

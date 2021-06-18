@@ -18,7 +18,7 @@ import java.util.Set;
 public class ProductCategory {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     Integer id;
 
     @Column(nullable = false)

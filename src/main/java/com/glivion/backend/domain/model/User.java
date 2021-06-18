@@ -18,13 +18,19 @@ public class User {
 
     @Column(nullable = false)
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     Integer id;
-
+    @Column(unique = true)
+    String username;
     @Column(nullable = false)
+    String password;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     Role role;
+
     @OneToOne
     UserProfile userProfile;
+
     @CreationTimestamp
     @Column(nullable = false)
     LocalDateTime joinedAt;
