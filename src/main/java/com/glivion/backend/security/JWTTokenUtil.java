@@ -21,7 +21,7 @@ import java.util.function.Function;
 @Component
 public class JWTTokenUtil implements Serializable {
 
-    private static final long TOKEN_VALIDITY = 15 * 60 * 60;
+    public static final long TOKEN_VALIDITY = 15 * 60 * 60;
 
     private static final Logger logger = LoggerFactory.getLogger(JWTTokenUtil.class);
 

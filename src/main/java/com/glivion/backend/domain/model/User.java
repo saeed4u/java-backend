@@ -28,7 +28,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     Role role;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     UserProfile userProfile;
 
     @CreationTimestamp
