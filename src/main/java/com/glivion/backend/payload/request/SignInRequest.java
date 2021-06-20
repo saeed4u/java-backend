@@ -2,8 +2,7 @@ package com.glivion.backend.payload.request;
 
 import lombok.*;
 
-@AllArgsConstructor(staticName = "of")
-@NoArgsConstructor(force = true,access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 @Getter
 public class SignInRequest {
 
