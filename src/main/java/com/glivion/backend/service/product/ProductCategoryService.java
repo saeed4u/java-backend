@@ -17,6 +17,8 @@ public class ProductCategoryService {
 
     private final ProductCategoryRepository categoryRepository;
 
+    public static final String GROCERIES_CATEGORY_CODE = "groceries";
+
     public List<ProductCategoryDto> getCategories(){
         return categoryRepository.findAll()
                 .stream()

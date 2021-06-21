@@ -5,6 +5,7 @@ import com.glivion.backend.domain.repository.ProductRepository;
 import com.glivion.backend.payload.dto.product.ProductCategoryDto;
 import com.glivion.backend.payload.dto.product.ProductDto;
 import com.glivion.backend.payload.dto.product.ProductStockDto;
+import com.glivion.backend.util.Converters;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -33,8 +34,8 @@ public class ProductService {
             ProductCategoryDto category = ProductCategoryDto.of(product.getCategory().getId(), product.getCategory().getName(), product.getCategory().getCode(), product.getCategory().getDescription());
             ProductStockDto stock = ProductStockDto.of(product.getStock().getAvailableQuantity(), product.getStock().getTotalQuantity(), product.getStock().getQuantityOnHold());
 
-            return ProductDto.of(product.getName(), product.getCode(),
-                    product.getDescription(), product.getImageUrl(), (double) (product.getPrice() / 100), category, stock);
+            return ProductDto.of(product.getId(),product.getName(), product.getCode(),
+                    product.getDescription(), product.getImageUrl(), Converters.convertCentToActual(product.getPrice()), category, stock);
 
         }).collect(Collectors.toList());
     }

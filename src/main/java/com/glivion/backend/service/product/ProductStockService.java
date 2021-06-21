@@ -11,6 +11,8 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
+
+//a very minimal implementation of products stocking
 public class ProductStockService {
 
     private final ProductStockRepository repository;

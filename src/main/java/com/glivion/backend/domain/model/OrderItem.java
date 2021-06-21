@@ -1,13 +1,11 @@
 package com.glivion.backend.domain.model;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 @Entity
@@ -21,7 +19,7 @@ public class OrderItem {
 
     @ManyToOne
     Order order;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     Product product;
 
     Integer quantity;

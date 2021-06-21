@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
@@ -30,12 +31,7 @@ public class JWTTokenUtil implements Serializable {
     private String jwtSecret;
 
     private Claims getAllClaimsFromToken(String token) {
-        return Jwts.parserBuilder().setSigningKey(jwtSecret).build().parseClaimsJws(token).getBody();
-    }
-
-    private Boolean isTokenExpired(String token) {
-        final Date expiration = getExpirationDateFromToken(token);
-        return expiration.before(new Date());
+        return Jwts.parserBuilder().setSigningKey(getKey()).build().parseClaimsJws(token).getBody();
     }
 
     private <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
@@ -43,14 +39,11 @@ public class JWTTokenUtil implements Serializable {
         return claimsResolver.apply(claims);
     }
 
-    private String doGenerateToken(Map<String, Object> claims, String subject) {
-        String encodedKey = Base64.getEncoder().encodeToString(jwtSecret.getBytes());
-        byte[] keyBytes = Decoders.BASE64.decode(encodedKey);
-        Key key = Keys.hmacShaKeyFor(keyBytes);
-        return Jwts.builder().setClaims(claims).setSubject(subject)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + TOKEN_VALIDITY * 1000))
-                .signWith(key)
+    private String doGenerateToken(String subject) {
+        return Jwts.builder()
+                .setSubject(subject)
+                .setIssuedAt(new Date(System.currentTimeMillis() + TOKEN_VALIDITY * 1000))
+                .signWith(getKey())
                 .compact();
     }
 
@@ -59,13 +52,7 @@ public class JWTTokenUtil implements Serializable {
     }
 
     public String generateToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
-        return doGenerateToken(claims, userDetails.getUsername());
-    }
-
-    public Boolean validateToken(String token, UserDetails userDetails) {
-        final String username = getUsernameFromToken(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        return doGenerateToken(userDetails.getUsername());
     }
 
     public String getUsernameFromToken(String token) {
@@ -73,8 +60,9 @@ public class JWTTokenUtil implements Serializable {
     }
 
     public boolean validateJwtToken(String authToken) {
+        logger.info("auth token "+authToken);
         try {
-            Jwts.parserBuilder().setSigningKey(jwtSecret).build().parseClaimsJws(authToken);
+            Jwts.parserBuilder().setSigningKey(getKey()).build().parseClaimsJws(authToken.trim());
             return true;
         } catch (SignatureException e) {
             logger.error("Invalid JWT signature: {}", e.getMessage());
@@ -89,6 +77,10 @@ public class JWTTokenUtil implements Serializable {
         }
 
         return false;
+    }
+
+    private Key getKey(){
+        return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
 }

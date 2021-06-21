@@ -28,9 +28,9 @@ public class Product {
     @Column(nullable = false)
     Integer price;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     ProductCategory category;
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     ProductStock stock;
 
     @CreationTimestamp

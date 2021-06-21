@@ -1,18 +1,22 @@
 package com.glivion.backend.exception.handler;
 
 import com.glivion.backend.exception.BadRequestException;
+import com.glivion.backend.exception.UnAuthorisedException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -68,5 +72,16 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<ApiError> handleBadRequestException(BadRequestException exception) {
         return ResponseEntity.badRequest().body(new ApiError(BAD_REQUEST, exception));
     }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    protected ResponseEntity<ApiError> handleBadCredentialsException(BadCredentialsException exception) {
+        return ResponseEntity.badRequest().body(new ApiError(UNAUTHORIZED, "Invalid credential provided", exception));
+    }
+
+    @ExceptionHandler({UnAuthorisedException.class, AuthenticationException.class})
+    protected ResponseEntity<ApiError> handleUnAuthorisedException(BadRequestException exception) {
+        return ResponseEntity.status(UNAUTHORIZED).body(new ApiError(UNAUTHORIZED, exception));
+    }
+
 
 }

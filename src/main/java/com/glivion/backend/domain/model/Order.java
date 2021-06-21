@@ -8,6 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Table(name = "orders")
 @Entity
@@ -19,16 +20,23 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Integer id;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     String invoiceNumber;
 
     @ManyToOne
     User user;
 
+    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
+    Set<OrderItem> orderItems;
+
     @Column(nullable = false)
     Integer subTotal;
     @Column(nullable = false)
     Integer discount;
+    @Column(nullable = false)
+    Integer percentageDiscount;
+    @Column(nullable = false)
+    Integer otherDiscount;
     @Column(nullable = false)
     Integer orderTotal;
 
@@ -37,10 +45,10 @@ public class Order {
     OrderStatus status;
 
     @CreationTimestamp
-    @Column(nullable = false)
+    @Column
     LocalDateTime createdAt;
     @UpdateTimestamp
-    @Column(nullable = false)
+    @Column
     LocalDateTime updatedAt;
 
 }

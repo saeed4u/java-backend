@@ -9,11 +9,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
 @Getter
 public class ProductDto {
+    private Integer id;
     private String name;
     private String code;
     private String description;
     private String imageUrl;
-    private Double price;
+    private String price;
     private ProductCategoryDto category;
     private ProductStockDto stock;
 }

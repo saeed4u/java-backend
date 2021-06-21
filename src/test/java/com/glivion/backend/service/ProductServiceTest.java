@@ -8,6 +8,7 @@ import com.glivion.backend.domain.repository.ProductRepository;
 import com.glivion.backend.domain.repository.ProductStockRepository;
 import com.glivion.backend.payload.dto.product.ProductDto;
 import com.glivion.backend.service.product.ProductService;
+import com.glivion.backend.util.Converters;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,7 +79,7 @@ public class ProductServiceTest {
 
         assertThat(productDto.getName()).isEqualTo("product_name");
         assertThat(productDto.getCode()).isEqualTo("product_code");
-        assertThat(productDto.getPrice()).isEqualTo(10);
+        assertThat(productDto.getPrice()).isEqualTo(Converters.convertCentToActual(1000));
 
         productRepository.deleteAll();
 
