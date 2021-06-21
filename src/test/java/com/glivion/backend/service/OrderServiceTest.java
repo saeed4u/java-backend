@@ -4,6 +4,7 @@ import com.glivion.backend.domain.model.*;
 import com.glivion.backend.domain.repository.ProductCategoryRepository;
 import com.glivion.backend.domain.repository.ProductRepository;
 import com.glivion.backend.domain.repository.UserRepository;
+import com.glivion.backend.exception.UnAuthorisedException;
 import com.glivion.backend.payload.dto.order.OrderDto;
 import com.glivion.backend.payload.request.OrderItemRequest;
 import com.glivion.backend.payload.request.OrderRequest;
@@ -25,7 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -257,6 +257,68 @@ public class OrderServiceTest {
 
         makeOrderAssertions(orderDto, subTotal, otherDiscount,percentageDiscount, orderTotal);
 
+    }
+
+    @Test
+    public void testGetUserOrders(){
+        databaseSeeder.createProductCategories();
+
+        User user = new User();
+        user.setUsername("a_username");
+        user.setRole(Role.CUSTOMER);
+        user.setPassword("a_password");
+        user = userRepository.save(user);
+
+        int productPrice = 50 * 100;
+        int quantity = 10;
+        List<Product> products = productRepository.findAll();
+        Product product = products.get(0);
+        product.setPrice(productPrice);
+        product = productRepository.save(product);
+
+
+        OrderItemRequest orderItemRequest = new OrderItemRequest(product.getId(), quantity);
+        OrderRequest orderRequest = new OrderRequest(Collections.singletonList(orderItemRequest));
+
+        OrderDto orderDto = orderService.makeOrder(user.getId(), orderRequest);
+
+        List<OrderDto> userOrders = orderService.getUserOrders(user.getId());
+
+        assertThat(userOrders).hasSize(1);
+        assertThat(orderDto.getId()).isEqualTo(userOrders.get(0).getId());
+
+    }
+
+    @Test
+    public void testGetOrderExpectValidationError(){
+        assertThrows(EntityNotFoundException.class, () -> orderService.getOrder(1, 1));
+    }
+
+    @Test
+    public void testGetOrderExpectUnAuthorisedError(){
+        databaseSeeder.createProductCategories();
+
+        User user = new User();
+        user.setUsername("a_username");
+        user.setRole(Role.CUSTOMER);
+        user.setPassword("a_password");
+        user = userRepository.save(user);
+
+        int productPrice = 50 * 100;
+        int quantity = 10;
+        List<Product> products = productRepository.findAll();
+        Product product = products.get(0);
+        product.setPrice(productPrice);
+        product = productRepository.save(product);
+
+
+        OrderItemRequest orderItemRequest = new OrderItemRequest(product.getId(), quantity);
+        OrderRequest orderRequest = new OrderRequest(Collections.singletonList(orderItemRequest));
+
+        OrderDto orderDto = orderService.makeOrder(user.getId(), orderRequest);
+
+        User finalUser = user;
+        assertThrows(UnAuthorisedException.class, () -> orderService.getOrder(finalUser.getId() + 1, orderDto.getId()));
     }
 
     private void makeOrderAssertions(OrderDto orderDto, int subTotal, int otherDiscount,int percentageDiscount, int orderTotal) {

@@ -1,7 +1,6 @@
 package com.glivion.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.glivion.backend.exception.handler.ApiError;
 import com.glivion.backend.payload.request.SignUpRequest;
 import com.glivion.backend.service.UserService;
 import org.junit.jupiter.api.Test;
@@ -53,7 +52,7 @@ public class AuthControllerTest {
                         "    \"status\": \"BAD_REQUEST\",\n" +
                         "    \"message\": \"Validation errors\",\n" +
                         "    \"subErrors\": {\n" +
-                        "        \"username\": \"must not be null\"\n" +
+                        "        \"username\": \"must not be blank\"\n" +
                         "    }\n" +
                         "}"));
     }

@@ -5,7 +5,6 @@ import com.glivion.backend.domain.repository.OrderItemRepository;
 import com.glivion.backend.domain.repository.OrderRepository;
 import com.glivion.backend.domain.repository.ProductRepository;
 import com.glivion.backend.domain.repository.UserRepository;
-import com.glivion.backend.exception.BadRequestException;
 import com.glivion.backend.exception.UnAuthorisedException;
 import com.glivion.backend.payload.dto.order.OrderDto;
 import com.glivion.backend.payload.dto.order.OrderItemDto;
@@ -15,8 +14,6 @@ import com.glivion.backend.service.product.ProductCategoryService;
 import com.glivion.backend.service.product.ProductStockService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,18 +58,11 @@ public class OrderService {
         Set<OrderItem> orderItems = getOrderItems(orderItemRequests, products, orderTotalAtomic, groceriesTotalAtomic);
 
         order.setOrderItems(orderItems);
-        Logger logger = LoggerFactory.getLogger(this.getClass());
         int groceriesTotal = groceriesTotalAtomic.get();
         int subTotal = orderTotalAtomic.get();
 
         int totalToApplyPercentageDiscount = subTotal - groceriesTotal;
         int percentageDiscount = (int) (totalToApplyPercentageDiscount * getPercentageDiscountToApply(user));
-
-        logger.info("subTotal "+subTotal);
-        logger.info("groceriesTotal "+groceriesTotal);
-        logger.info("totalToApplyPercentageDiscount "+(totalToApplyPercentageDiscount * getPercentageDiscountToApply(user)));
-        logger.info("percentageDiscount "+percentageDiscount);
-
         int otherDiscount = getOtherDiscountToApply(subTotal);
         int discountToApply = percentageDiscount + otherDiscount;
         int orderTotal = subTotal - discountToApply;
@@ -96,7 +86,7 @@ public class OrderService {
     }
 
     public OrderDto getOrder(Integer userId, Integer orderId) {
-        Order order = orderRepository.findById(orderId).orElseThrow();
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundException("No order with id: "+orderId+" was found"));
         if (!order.getUser().getId().equals(userId)) {
             throw new UnAuthorisedException();
         }
@@ -104,7 +94,6 @@ public class OrderService {
     }
 
     private Set<OrderItem> getOrderItems(List<OrderItemRequest> orderItemRequests, Map<Integer, Product> products, AtomicInteger orderTotalAtomic, AtomicInteger groceriesTotalAtomic) {
-        Logger logger = LoggerFactory.getLogger(this.getClass());
 
         return orderItemRequests.stream().map((OrderItemRequest orderItemRequest) -> {
             int productId = orderItemRequest.getProductId();
@@ -115,7 +104,6 @@ public class OrderService {
             int itemTotal = product.getPrice() * quantity;
             if (Objects.equals(product.getCategory().getCode(), ProductCategoryService.GROCERIES_CATEGORY_CODE)) {
                 groceriesTotalAtomic.addAndGet(itemTotal);
-                logger.info("Here 000");
             }
             orderTotalAtomic.addAndGet(itemTotal);
             OrderItem orderItem = new OrderItem();

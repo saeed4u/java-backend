@@ -2,10 +2,7 @@ package com.glivion.backend.payload.dto.order;
 
 import com.glivion.backend.domain.model.OrderItem;
 import com.glivion.backend.domain.model.OrderStatus;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
