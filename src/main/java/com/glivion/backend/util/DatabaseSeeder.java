@@ -9,27 +9,37 @@ import com.glivion.backend.domain.repository.ProductCategoryRepository;
 import com.glivion.backend.domain.repository.ProductRepository;
 import com.glivion.backend.domain.repository.ProductStockRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 
 @Component
-@AllArgsConstructor
 public class DatabaseSeeder implements CommandLineRunner {
 
     private static final int [] prices = {1000, 500, 5500, 2000, 6003, 1003, 3002, 9864, 9034};
 
+    @Value("${application.environment}")
+    private String environment;
 
-    private final ProductCategoryRepository productCategoryRepository;
+    @Autowired
+    private ProductCategoryRepository productCategoryRepository;
 
-    private final ProductRepository productRepository;
+    @Autowired
+    private ProductRepository productRepository;
 
-    private final ProductStockRepository productStockRepository;
+    @Autowired
+    private ProductStockRepository productStockRepository;
 
 
     @Override
     public void run(String... args) throws Exception {
+        if (environment.equals("test")){
+            return;
+        }
         createProductCategories();
     }
 

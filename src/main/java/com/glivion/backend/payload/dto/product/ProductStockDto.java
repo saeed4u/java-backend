@@ -1,5 +1,4 @@
-package com.glivion.backend.payload.dto;
-
+package com.glivion.backend.payload.dto.product;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -9,8 +8,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
 @Getter
-public class AuthDto {
-    private final TokenDto token;
-    private final UserDto user;
-
+public class ProductStockDto {
+    private Integer quantityAvailable;
+    private Integer totalQuantity;
+    private Integer quantityOnHold;
 }

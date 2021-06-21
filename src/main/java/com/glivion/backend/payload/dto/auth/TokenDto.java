@@ -1,4 +1,4 @@
-package com.glivion.backend.payload.dto;
+package com.glivion.backend.payload.dto.auth;
 
 import com.glivion.backend.security.JWTTokenUtil;
 import lombok.*;

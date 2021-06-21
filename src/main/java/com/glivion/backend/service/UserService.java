@@ -6,11 +6,11 @@ import com.glivion.backend.domain.model.UserProfile;
 import com.glivion.backend.domain.repository.UserProfileRepository;
 import com.glivion.backend.domain.repository.UserRepository;
 import com.glivion.backend.exception.BadRequestException;
-import com.glivion.backend.payload.dto.AuthDto;
-import com.glivion.backend.payload.dto.TokenDto;
+import com.glivion.backend.payload.dto.auth.AuthDto;
+import com.glivion.backend.payload.dto.auth.TokenDto;
 import com.glivion.backend.payload.request.SignInRequest;
 import com.glivion.backend.payload.request.SignUpRequest;
-import com.glivion.backend.payload.dto.UserDto;
+import com.glivion.backend.payload.dto.auth.UserDto;
 import com.glivion.backend.security.JWTTokenUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,9 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor

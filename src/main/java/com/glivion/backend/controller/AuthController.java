@@ -1,11 +1,10 @@
 package com.glivion.backend.controller;
 
-import com.glivion.backend.payload.dto.AuthDto;
+import com.glivion.backend.payload.dto.auth.AuthDto;
 import com.glivion.backend.payload.request.SignInRequest;
 import com.glivion.backend.payload.request.SignUpRequest;
 import com.glivion.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;

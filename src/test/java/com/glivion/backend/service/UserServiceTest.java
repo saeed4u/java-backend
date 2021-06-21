@@ -2,9 +2,9 @@ package com.glivion.backend.service;
 
 import com.glivion.backend.domain.model.Role;
 import com.glivion.backend.exception.BadRequestException;
-import com.glivion.backend.payload.dto.AuthDto;
-import com.glivion.backend.payload.dto.TokenDto;
-import com.glivion.backend.payload.dto.UserDto;
+import com.glivion.backend.payload.dto.auth.AuthDto;
+import com.glivion.backend.payload.dto.auth.TokenDto;
+import com.glivion.backend.payload.dto.auth.UserDto;
 import com.glivion.backend.payload.request.SignInRequest;
 import com.glivion.backend.payload.request.SignUpRequest;
 import org.junit.jupiter.api.Test;

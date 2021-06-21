@@ -1,7 +1,11 @@
 package com.glivion.backend.domain.repository;
 
 import com.glivion.backend.domain.model.ProductCategory;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 
-public interface ProductCategoryRepository extends CrudRepository<ProductCategory, Integer> {
+import java.util.Optional;
+
+public interface ProductCategoryRepository extends JpaRepository<ProductCategory, Integer> {
+    Optional<ProductCategory> findByCode(String code);
 }
