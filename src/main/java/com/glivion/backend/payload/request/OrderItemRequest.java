@@ -1,19 +1,19 @@
 package com.glivion.backend.payload.request;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Getter
 public class OrderItemRequest {
 
     @NotNull
-    private Integer productId;
+    private final Integer productId;
 
     @NotNull
     @Size(min = 1, max =  10)
-    private Integer quantity;
+    private final Integer quantity;
 }

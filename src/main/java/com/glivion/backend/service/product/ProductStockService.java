@@ -64,7 +64,7 @@ public class ProductStockService {
             throw new BadRequestException("Quantity requested is greater than quantity on hold");
         }
         productStock.setQuantityOnHold(quantityOnHold - quantity);
-        productStock.setQuantityOnHold(availableQuantity + quantity);
+        productStock.setAvailableQuantity(availableQuantity + quantity);
         repository.save(productStock);
     }
 

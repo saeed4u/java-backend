@@ -15,9 +15,12 @@ import com.glivion.backend.service.product.ProductCategoryService;
 import com.glivion.backend.service.product.ProductStockService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -34,6 +37,10 @@ import static com.glivion.backend.util.Converters.convertCentToActual;
 @RequiredArgsConstructor
 public class OrderService {
 
+    public static final double OLD_CUSTOMER_DISCOUNT = 0.05;
+    public static final double EMPLOYEE_DISCOUNT = 0.3;
+    public static final double AFFILIATE_DISCOUNT = 0.1;
+
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
     private final ProductStockService productStockService;
@@ -44,7 +51,7 @@ public class OrderService {
     public OrderDto makeOrder(int userId, OrderRequest orderRequest) {
         List<OrderItemRequest> orderItemRequests = orderRequest.getItems();
         Map<Integer, Product> products = orderItemRequests.stream().map(this::toProduct).collect(Collectors.toMap(Product::getId, Function.identity()));
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User with id " + userId + " was not found"));
         Order order = new Order();
         order.setStatus(OrderStatus.NEW);
         order.setUser(user);
@@ -54,11 +61,18 @@ public class OrderService {
         Set<OrderItem> orderItems = getOrderItems(orderItemRequests, products, orderTotalAtomic, groceriesTotalAtomic);
 
         order.setOrderItems(orderItems);
-
+        Logger logger = LoggerFactory.getLogger(this.getClass());
         int groceriesTotal = groceriesTotalAtomic.get();
         int subTotal = orderTotalAtomic.get();
+
         int totalToApplyPercentageDiscount = subTotal - groceriesTotal;
         int percentageDiscount = (int) (totalToApplyPercentageDiscount * getPercentageDiscountToApply(user));
+
+        logger.info("subTotal "+subTotal);
+        logger.info("groceriesTotal "+groceriesTotal);
+        logger.info("totalToApplyPercentageDiscount "+(totalToApplyPercentageDiscount * getPercentageDiscountToApply(user)));
+        logger.info("percentageDiscount "+percentageDiscount);
+
         int otherDiscount = getOtherDiscountToApply(subTotal);
         int discountToApply = percentageDiscount + otherDiscount;
         int orderTotal = subTotal - discountToApply;
@@ -90,6 +104,8 @@ public class OrderService {
     }
 
     private Set<OrderItem> getOrderItems(List<OrderItemRequest> orderItemRequests, Map<Integer, Product> products, AtomicInteger orderTotalAtomic, AtomicInteger groceriesTotalAtomic) {
+        Logger logger = LoggerFactory.getLogger(this.getClass());
+
         return orderItemRequests.stream().map((OrderItemRequest orderItemRequest) -> {
             int productId = orderItemRequest.getProductId();
             int quantity = orderItemRequest.getQuantity();
@@ -99,6 +115,7 @@ public class OrderService {
             int itemTotal = product.getPrice() * quantity;
             if (Objects.equals(product.getCategory().getCode(), ProductCategoryService.GROCERIES_CATEGORY_CODE)) {
                 groceriesTotalAtomic.addAndGet(itemTotal);
+                logger.info("Here 000");
             }
             orderTotalAtomic.addAndGet(itemTotal);
             OrderItem orderItem = new OrderItem();
@@ -110,14 +127,14 @@ public class OrderService {
         }).collect(Collectors.toSet());
     }
 
-    private double getPercentageDiscountToApply(User user) {
+    public double getPercentageDiscountToApply(User user) {
         switch (user.getRole()) {
             case CUSTOMER:
                 return getCustomerDiscountPercentage(user);
             case AFFILIATE:
-                return 0.1;
+                return AFFILIATE_DISCOUNT;
             default:
-                return 0.3;
+                return EMPLOYEE_DISCOUNT;
         }
     }
 
@@ -131,13 +148,13 @@ public class OrderService {
         long years = user.getJoinedAt().until(now, ChronoUnit.YEARS);
 
         if (years >= 2) {
-            return 0.05;
+            return OLD_CUSTOMER_DISCOUNT;
         }
         return 0;
     }
 
     private Product toProduct(OrderItemRequest orderItemRequest) {
-        return productRepository.findById(orderItemRequest.getProductId()).orElseThrow(() -> new BadRequestException("Product with id " + orderItemRequest.getProductId() + " was not found"));
+        return productRepository.findById(orderItemRequest.getProductId()).orElseThrow(() -> new EntityNotFoundException("Product with id " + orderItemRequest.getProductId() + " was not found"));
     }
 
     private OrderDto toOrderDto(Order order) {
