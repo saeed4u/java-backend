@@ -43,7 +43,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         createProductCategories();
     }
 
-    private void createProductCategories(){
+    public void createProductCategories(){
         Faker faker = new Faker();
         Commerce commerce = faker.commerce();
         for (int i = 0; i < 10; i++) {
