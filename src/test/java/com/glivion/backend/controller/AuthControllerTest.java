@@ -50,10 +50,7 @@ public class AuthControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().json("{\n" +
                         "    \"status\": \"BAD_REQUEST\",\n" +
-                        "    \"message\": \"Validation errors\",\n" +
-                        "    \"subErrors\": {\n" +
-                        "        \"username\": \"must not be blank\"\n" +
-                        "    }\n" +
+                        "    \"message\": \"Validation errors\"\n"+
                         "}"));
     }
 

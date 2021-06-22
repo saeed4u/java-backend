@@ -13,7 +13,6 @@ import java.util.Objects;
 @Entity
 @Getter
 @Setter
-@ToString
 public class User {
 
     @Column(nullable = false)
