@@ -8,6 +8,8 @@ import com.glivion.backend.domain.model.ProductStock;
 import com.glivion.backend.domain.repository.ProductCategoryRepository;
 import com.glivion.backend.domain.repository.ProductRepository;
 import com.glivion.backend.domain.repository.ProductStockRepository;
+import com.glivion.backend.service.product.ProductCategoryService;
+import com.glivion.backend.service.product.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -53,6 +55,11 @@ public class DatabaseSeeder implements CommandLineRunner {
             productCategory = productCategoryRepository.save(productCategory);
             createProducts(faker, productCategory);
         }
+        ProductCategory productCategory = new ProductCategory();
+        productCategory.setCode(ProductCategoryService.GROCERIES_CATEGORY_CODE);
+        productCategory.setName("Groceries");
+        productCategory = productCategoryRepository.save(productCategory);
+        createProducts(faker, productCategory);
     }
 
     private void createProducts(Faker faker, ProductCategory productCategory){
